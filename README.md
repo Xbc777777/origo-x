@@ -10,7 +10,7 @@ The source edition does not include account services, payments, advanced source 
 
 ## Run from source
 
-Use Flutter 3.44.4 (Dart 3.12 or newer):
+Use Flutter 3.47.7 (Dart 3.12 or newer):
 
 ```sh
 flutter pub get --enforce-lockfile

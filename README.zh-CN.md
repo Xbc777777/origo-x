@@ -8,7 +8,7 @@
 
 ## 本地构建
 
-使用 Flutter 3.44.4（Dart 3.12 及以上）：
+使用 Flutter 3.47.7（Dart 3.12 及以上）：
 
 ```sh
 flutter pub get --enforce-lockfile
