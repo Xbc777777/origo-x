@@ -35,8 +35,7 @@ jobs:
           mkdir -p Payload
           cp -R Runner.app Payload/
           zip -q -r ../Runner-unsigned.ipa Payload
-          cd ../..
-          ls -lh Runner-unsigned.ipa
+          ls -lh ../Runner-unsigned.ipa
       - name: Upload unsigned IPA
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
