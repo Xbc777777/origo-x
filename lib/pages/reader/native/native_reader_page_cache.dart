@@ -146,17 +146,22 @@ extension _NativeReaderPageCache on _NativeReaderPageState {
           chapters,
           chapterIndex,
           retainAroundCurrentChapter: true,
-        ).then((_) {
-          if (mounted) {
-            debugPrint(
-              '[reader-horizontal] warm content complete '
-              'chapter=$chapterIndex',
-            );
-            scheduleAfterFrame(requestFrame: true);
-          } else {
+        ).then(
+          (_) {
+            if (mounted) {
+              debugPrint(
+                '[reader-horizontal] warm content complete '
+                'chapter=$chapterIndex',
+              );
+              scheduleAfterFrame(requestFrame: true);
+            } else {
+              _queuedHorizontalPaginationWarms.remove(key);
+            }
+          },
+          onError: (_, _) {
             _queuedHorizontalPaginationWarms.remove(key);
-          }
-        }, onError: (_, _) => _queuedHorizontalPaginationWarms.remove(key));
+          },
+        );
         return;
       }
       final pageController = _pageController;

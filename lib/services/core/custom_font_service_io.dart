@@ -154,21 +154,23 @@ class CustomFontService {
       return const CustomFontImportResult.cancelled();
     }
     final selected = result.files.single;
+    late final Uint8List bytes;
     try {
-      final bytes =
+      final raw =
           selected.bytes ??
           (selected.path == null
               ? null
               : await File(selected.path!).readAsBytes());
-      if (bytes == null) {
+      if (raw == null) {
         throw const CustomFontException(CustomFontErrorCode.readFailed);
       }
-      return importFontBytes(fileName: selected.name, bytes: bytes);
+      bytes = raw;
     } on CustomFontException {
       rethrow;
     } catch (error) {
       throw CustomFontException(CustomFontErrorCode.readFailed, error);
     }
+    return importFontBytes(fileName: selected.name, bytes: bytes);
   }
 
   Future<CustomFontImportResult> importFontBytes({
