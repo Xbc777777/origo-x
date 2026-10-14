@@ -1,0 +1,512 @@
+{
+  "@@locale": "zh",
+  "home": "首页",
+  "@home": {
+    "description": "首页标签"
+  },
+  "library": "书架",
+  "@library": {
+    "description": "书库标签"
+  },
+  "settings": "设置",
+  "@settings": {
+    "description": "设置标签"
+  },
+  "theme": "主题",
+  "@theme": {
+    "description": "主题设置"
+  },
+  "accent": "强调色",
+  "@accent": {
+    "description": "强调色设置"
+  },
+  "bookmarks": "书签",
+  "@bookmarks": {
+    "description": "书签功能"
+  },
+  "notes": "笔记",
+  "@notes": {
+    "description": "笔记功能"
+  },
+  "highlights": "高亮",
+  "@highlights": {
+    "description": "高亮功能"
+  },
+  "ttsReading": "听书",
+  "@ttsReading": {
+    "description": "TTS朗读功能"
+  },
+  "pause": "暂停",
+  "@pause": {
+    "description": "暂停按钮"
+  },
+  "stop": "停止",
+  "@stop": {
+    "description": "停止按钮"
+  },
+  "language": "语言",
+  "@language": {
+    "description": "语言设置"
+  },
+  "fontSize": "字体大小",
+  "@fontSize": {
+    "description": "字体大小设置"
+  },
+  "readingProgress": "阅读进度",
+  "@readingProgress": {
+    "description": "阅读进度指示"
+  },
+  "totalPages": "总页数",
+  "@totalPages": {
+    "description": "总页数标签"
+  },
+  "currentPage": "当前页",
+  "@currentPage": {
+    "description": "当前页标签"
+  },
+  "cancel": "取消",
+  "@cancel": {
+    "description": "取消按钮"
+  },
+  "confirm": "确认",
+  "@confirm": {
+    "description": "确认按钮"
+  },
+  "delete": "删除",
+  "@delete": {
+    "description": "删除按钮"
+  },
+  "edit": "编辑",
+  "@edit": {
+    "description": "编辑按钮"
+  },
+  "save": "保存",
+  "@save": {
+    "description": "保存按钮"
+  },
+  "back": "返回",
+  "@back": {
+    "description": "返回按钮"
+  },
+  "next": "下一页",
+  "@next": {
+    "description": "下一页按钮"
+  },
+  "previous": "上一页",
+  "@previous": {
+    "description": "上一页按钮"
+  },
+  "search": "搜索",
+  "@search": {
+    "description": "搜索功能"
+  },
+  "loading": "加载中...",
+  "@loading": {
+    "description": "加载中提示"
+  },
+  "error": "错误",
+  "@error": {
+    "description": "错误信息"
+  },
+  "readingSettings": "阅读设置",
+  "@readingSettings": {
+    "description": "阅读设置部分"
+  },
+  "readerFont": "阅读字体",
+  "@readerFont": {
+    "description": "阅读正文的字体设置"
+  },
+  "readerFontSelectionDescription": "选择阅读正文的字体。EPUB 可选书籍内置、系统字体或其他已安装字体。",
+  "@readerFontSelectionDescription": {
+    "description": "说明阅读字体选择及 EPUB 内嵌字体规则"
+  },
+  "readerFontBookPriorityHint": "书籍有内嵌字体时优先使用，否则使用平台默认阅读字体。",
+  "@readerFontBookPriorityHint": {
+    "description": "选用系统阅读字体时的提示"
+  },
+  "readerFontOverrideHint": "覆盖出版社在书籍中内嵌的字体。",
+  "@readerFontOverrideHint": {
+    "description": "选用个性化阅读字体时的提示"
+  },
+  "fontBookEmbedded": "书籍内置",
+  "fontSystem": "平台默认",
+  "@fontSystem": {
+    "description": "系统默认字体"
+  },
+  "fontSystemDescription": "使用为当前平台优化的默认阅读字体，保持字形与分页稳定。",
+  "@fontSystemDescription": {
+    "description": "系统字体选项说明"
+  },
+  "fontSerifDescription": "沉静、有出版物气质的衬线字体，适合长时间阅读。",
+  "@fontSerifDescription": {
+    "description": "衬线字体选项说明"
+  },
+  "fontSansSerifDescription": "清晰简洁的无衬线字体，适合紧凑界面和日常阅读。",
+  "@fontSansSerifDescription": {
+    "description": "无衬线字体选项说明"
+  },
+  "fontMonospaceDescription": "等宽字体，适合代码、技术内容和专注排版。",
+  "@fontMonospaceDescription": {
+    "description": "等宽字体选项说明"
+  },
+  "fontPreviewText": "Origo X · 自由阅读，开卷有益",
+  "@fontPreviewText": {
+    "description": "中英文字体预览文本"
+  },
+  "customFonts": "我的字体",
+  "builtInFonts": "内置字体",
+  "fontVariableWeightRange": "可调字重 {min}–{max}",
+  "@fontVariableWeightRange": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "fontStaticWeight": "固定字重（加粗为系统合成）",
+  "importFont": "导入字体",
+  "importingFont": "正在导入字体…",
+  "customFontImportUnsupported": "当前平台暂不支持持久化导入字体。",
+  "customFontUnsupportedFormat": "请选择 TTF 或 OTF 字体文件。",
+  "customFontInvalid": "该文件不是有效或受支持的字体。",
+  "customFontTooLarge": "字体文件不能超过 50 MB。",
+  "customFontReadFailed": "无法读取字体文件。",
+  "customFontLoadFailed": "无法加载该字体。",
+  "customFontStorageFailed": "无法将字体保存到当前设备。",
+  "renameFont": "重命名字体",
+  "fontFamilyLabel": "字体",
+  "@fontFamilyLabel": {
+    "description": "字体标签"
+  },
+  "fontSizeLabel": "字体大小",
+  "@fontSizeLabel": {
+    "description": "字体大小标签"
+  },
+  "readerFontWeightLabel": "字体粗细",
+  "readerFontWeightLight": "较细",
+  "readerFontWeightRegular": "标准",
+  "readerFontWeightMedium": "中等",
+  "readerFontWeightSemiBold": "半粗",
+  "readerFontWeightBold": "粗",
+  "readerFontWeightVariableHint": "阅读调节提供 300–700 五档；当前字体的真实完整范围为 {min}–{max}。",
+  "@readerFontWeightVariableHint": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "readerFontWeightSyntheticHint": "阅读调节提供 300–700 五档；当前字体未声明可变字重，由系统近似合成，效果可能因平台而异。",
+  "readerFontWeightPreview": "春风又绿江南岸 · Reading",
+  "lineSpacingLabel": "行距",
+  "@lineSpacingLabel": {
+    "description": "行距标签"
+  },
+  "letterSpacingLabel": "字间距",
+  "@letterSpacingLabel": {
+    "description": "字间距标签"
+  },
+  "textAlignmentLabel": "对齐方式",
+  "@textAlignmentLabel": {
+    "description": "阅读正文对齐方式标签"
+  },
+  "textAlignmentNatural": "自然对齐",
+  "@textAlignmentNatural": {
+    "description": "阅读正文自然对齐"
+  },
+  "textAlignmentJustified": "两端对齐",
+  "@textAlignmentJustified": {
+    "description": "阅读正文两端对齐"
+  },
+  "firstLineIndentLabel": "首行缩进",
+  "@firstLineIndentLabel": {
+    "description": "首行缩进标签"
+  },
+  "paragraphSpacingLabel": "段落间距",
+  "@paragraphSpacingLabel": {
+    "description": "阅读正文段落之间的附加间距"
+  },
+  "pageTurningMode": "翻页模式",
+  "@pageTurningMode": {
+    "description": "翻页模式"
+  },
+  "pageTurningSlide": "水平滑动",
+  "@pageTurningSlide": {
+    "description": "滑动翻页"
+  },
+  "pageTurningScroll": "上下翻页",
+  "@pageTurningScroll": {
+    "description": "滚动翻页"
+  },
+  "tapZoneSettings": "点击区域设置",
+  "@tapZoneSettings": {
+    "description": "点击区域设置"
+  },
+  "tapZoneNextPage": "下一页",
+  "@tapZoneNextPage": {
+    "description": "下一页点击区域"
+  },
+  "tapZonePreviousPage": "上一页",
+  "@tapZonePreviousPage": {
+    "description": "上一页点击区域"
+  },
+  "tapZoneMenu": "菜单",
+  "@tapZoneMenu": {
+    "description": "菜单点击区域"
+  },
+  "tapZoneNextChapter": "下一章",
+  "@tapZoneNextChapter": {
+    "description": "下一章点击区域"
+  },
+  "tapZonePreviousChapter": "上一章",
+  "@tapZonePreviousChapter": {
+    "description": "上一章点击区域"
+  },
+  "tapZoneNone": "无操作",
+  "@tapZoneNone": {
+    "description": "无动作点击区域"
+  },
+  "tapZoneSettingsHint": "自定义九宫格每个区域的点击动作",
+  "@tapZoneSettingsHint": {
+    "description": "点击区域设置入口提示"
+  },
+  "tapZoneChooseAction": "选择操作",
+  "@tapZoneChooseAction": {
+    "description": "点击区域动作选择标题"
+  },
+  "tapZoneMenuRequiredHint": "点击任意区域修改动作。至少保留一个菜单区域；全部移除时，中间区域会自动恢复为菜单。",
+  "@tapZoneMenuRequiredHint": {
+    "description": "点击区域编辑器菜单保留提示"
+  },
+  "tapZoneReset": "恢复默认",
+  "@tapZoneReset": {
+    "description": "点击区域恢复默认按钮"
+  },
+  "highlightColor": "荧光笔颜色",
+  "@highlightColor": {
+    "description": "高亮颜色标签"
+  },
+  "noteTypeHighlight": "高亮",
+  "@noteTypeHighlight": {
+    "description": "高亮类型"
+  },
+  "noteTypeUnderline": "下划线",
+  "@noteTypeUnderline": {
+    "description": "下划线类型"
+  },
+  "noteTypeNote": "笔记",
+  "@noteTypeNote": {
+    "description": "笔记类型"
+  },
+  "author": "作者",
+  "@author": {
+    "description": "作者标签"
+  },
+  "progress": "进度",
+  "@progress": {
+    "description": "进度标签"
+  },
+  "deleteBook": "删除书籍",
+  "@deleteBook": {
+    "description": "删除书籍动作"
+  },
+  "readerToolbarTOC": "目录",
+  "@readerToolbarTOC": {
+    "description": "目录"
+  },
+  "readerAddBookmark": "添加书签",
+  "@readerAddBookmark": {
+    "description": "添加书签"
+  },
+  "bookmarkAdded": "已添加书签",
+  "@bookmarkAdded": {
+    "description": "添加书签消息"
+  },
+  "bookmarkRemoved": "已移除书签",
+  "@bookmarkRemoved": {
+    "description": "移除书签消息"
+  },
+  "readerNavigationTitle": "阅读导航",
+  "readerNavigationPosition": "第 {current}/{total} 章",
+  "@readerNavigationPosition": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "readerSearchChapters": "搜索章节",
+  "readerBackToCurrentChapter": "回到当前章节",
+  "readerCurrentChapter": "当前",
+  "readerCurrentPosition": "当前位置",
+  "readerNoChapterResults": "没有找到相关章节",
+  "readerNoChapterResultsHint": "尝试使用章节标题中的其他关键词。",
+  "readerNoBookmarks": "还没有书签",
+  "readerNoBookmarksHint": "阅读时点击右上角的书签按钮，即可保存当前位置。",
+  "readerUnsupportedFormat": "该文件格式暂不支持阅读",
+  "currentChapter": "当前章节",
+  "readerPrefaceTitle": "正文前",
+  "readerModeHorizontalPage": "无动画",
+  "readerModeVerticalScrollHint": "预分页内容上下连续滑动，左右滑动切换章节",
+  "readerModeWholeBookScrollHint": "全书预分页后组成可定位的纵向列表",
+  "readerScrollByChapterTitle": "按章节滚动",
+  "readerScrollByChapterOnHint": "单章内按页上下滑动，左右滑动切换章节",
+  "readerScrollByChapterOffHint": "所有章节按页连接为可定位的纵向列表",
+  "readerModeHorizontalPageHint": "点击左侧上一页，点击右侧下一页",
+  "readerModeHorizontalSlideHint": "页面跟随手指横向移动并吸附翻页",
+  "readerModeCoverSlide": "覆盖翻页",
+  "readerModeCoverSlideHint": "当前页向左划出，底下的下一页逐渐露出",
+  "readerModePageCurl": "仿真翻页",
+  "readerModePageCurlHint": "左右拖动卷起页面，松手后完成翻页或回弹",
+  "readerTextBrightnessLabel": "文字亮度",
+  "readerDimTextInDarkModeTitle": "夜间模式降低文字亮度",
+  "readerDimTextInDarkModeHint": "夜间模式下固定使用 70% 亮度",
+  "readerHorizontalMarginLabel": "左右页边距",
+  "readerTopMarginLabel": "上页边距",
+  "readerBottomMarginLabel": "下页边距",
+  "readerTxtChapterTitlePageTitle": "章节标题独立成页",
+  "readerTxtChapterTitlePageHint": "关闭后，章节标题显示在正文开头",
+  "readerChapterFallback": "第 {number} 章",
+  "readerOpenFailed": "打开失败：{error}",
+  "readerNoContent": "书籍没有可显示的正文",
+  "readerStatusPaged": "第 {chapter}/{chapterCount} 章 · {page}/{pageCount} 页",
+  "readerTopBarStyleTitle": "顶部信息",
+  "readerTopBarStyleSystem": "系统状态栏",
+  "readerTopBarStyleSystemHint": "显示系统时间、信号与电量",
+  "readerTopBarStyleReader": "阅读信息栏",
+  "readerTopBarStyleReaderHint": "显示时间、章节标题与电量",
+  "readerTopBarStyleFloating": "灵动信息栏",
+  "readerTopBarStyleFloatingHint": "在状态栏位置显示时间与电量，不占用正文空间",
+  "readerTopBarStyleHidden": "完全沉浸",
+  "readerTopBarStyleHiddenHint": "顶部不显示任何信息",
+  "readerThemeTitle": "阅读主题",
+  "readerThemeDescription": "仅改变阅读页面与阅读控制栏，不影响应用主题",
+  "readerSettingsTabTheme": "主题",
+  "readerSettingsTabText": "文字",
+  "readerSettingsTabLayout": "版式",
+  "readerSettingsTabPaging": "翻页",
+  "readerSettingsAdvancedTypography": "高级排版",
+  "readerAutoPageTurnTitle": "自动翻页",
+  "readerAutoPageTurnOff": "未开启",
+  "readerAutoPageTurnShortcutTitle": "自动翻页快捷按钮",
+  "readerAutoPageTurnShortcutHint": "随阅读控制栏显示，方便开始或暂停自动翻页",
+  "readerAutoPageTurnModeTimed": "定时翻页",
+  "readerAutoPageTurnModeSweep": "扫屏翻页",
+  "readerAutoPageTurnModeContinuous": "匀速滚动",
+  "readerAutoPageTurnModeInterval": "间隔滚动",
+  "readerAutoPageTurnTimedHint": "停留设定时间后，翻到下一页。",
+  "readerAutoPageTurnSweepHint": "分界线从上往下扫过，线上方逐渐显示下一页。",
+  "readerAutoPageTurnContinuousHint": "正文按照稳定的阅读速度持续向下滚动。",
+  "readerAutoPageTurnIntervalHint": "停留设定时间后，平滑向下滚动约一屏。",
+  "readerAutoPageTurnSweepDurationLabel": "扫屏时长",
+  "readerAutoPageTurnScrollSpeedLabel": "滚动速度",
+  "readerAutoPageTurnSecondsPerScreen": "{seconds} 秒/屏",
+  "@readerAutoPageTurnSecondsPerScreen": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "readerAutoPageTurnModeValue": "{mode} · {seconds} 秒/屏",
+  "@readerAutoPageTurnModeValue": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "readerAutoPageTurnModePaused": "已暂停 · {mode} · {seconds} 秒/屏",
+  "@readerAutoPageTurnModePaused": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "readerAutoPageTurnIntervalLabel": "翻页间隔",
+  "readerAutoPageTurnStart": "开始自动翻页",
+  "readerAutoPageTurnResume": "继续自动翻页",
+  "readerThemeDay": "白天",
+  "readerThemeFollowSystem": "跟随系统",
+  "readerThemeMist": "晨雾",
+  "readerThemeGreen": "护眼",
+  "readerThemeRose": "豆沙",
+  "readerThemeNavy": "深蓝",
+  "readerThemeNight": "黑夜",
+  "readerThemePureBlack": "纯黑",
+  "readerThemeParchment": "牛皮纸",
+  "readerThemeCustom": "自定义",
+  "readerPullBookmarkTitle": "下拉书签",
+  "readerPullBookmarkHint": "从屏幕顶部向下拉，松手即可添加或移除当前页书签",
+  "readerPullBookmarkAddHint": "继续下拉以添加书签",
+  "readerPullBookmarkRemoveHint": "继续下拉以移除书签",
+  "readerPullBookmarkReleaseHint": "松开完成",
+  "readerTapAnimationTitle": "点击动画",
+  "readerTapAnimationHint": "左右点击时使用当前翻页模式的动画；关闭后立即刷新页面",
+  "readerTabletTwoPageTitle": "平板双页布局",
+  "readerTabletTwoPageHint": "横屏时并排显示左右两页；关闭后始终使用单页布局",
+  "readerCustomThemeReset": "重置",
+  "readerCustomThemeColors": "主题颜色",
+  "readerCustomThemeTextColor": "字体颜色",
+  "readerCustomThemeTextColorHint": "正文、标题与主要图标",
+  "readerCustomThemeBackground": "阅读背景",
+  "readerCustomThemeBackgroundHint": "纸张与阅读画布的底色",
+  "readerCustomThemeControlBar": "控制栏颜色",
+  "readerCustomThemeControlBarHint": "顶部、底部控制栏与设置面板",
+  "readerCustomThemeContrastGood": "正文与背景对比清晰，适合长时间阅读",
+  "readerCustomThemeContrastLow": "正文与背景对比较低，可能容易疲劳",
+  "readerCustomThemeSave": "保存并使用",
+  "readerCustomThemePreview": "实时预览",
+  "readerCustomThemePreviewChapter": "第一章 · 风从书页间吹过",
+  "readerCustomThemePreviewBody": "这是你的阅读空间。调整字体、纸张和控制栏的颜色，让每一页都更贴近自己的阅读习惯。",
+  "readerCustomThemeHexInvalid": "请输入 6 位十六进制颜色，例如 #F6F0E4",
+  "readerCustomThemeHexLabel": "十六进制颜色",
+  "readerCustomThemeAdd": "添加主题",
+  "readerCustomThemeReorderHint": "长按右侧拖动柄调整顺序，排序会同步到阅读设置的主题列表。",
+  "readerCustomThemeUse": "使用选中的主题",
+  "readerCustomThemeDeleteTitle": "删除阅读主题？",
+  "readerCustomThemeDeleteMessage": "“{name}”将从主题列表中删除，已保存的背景图片也会一并清理。",
+  "readerCustomThemeNewTitle": "新建阅读主题",
+  "readerCustomThemeEditTitle": "编辑阅读主题",
+  "readerCustomThemeName": "主题名称",
+  "readerCustomThemeNameHint": "例如：雨夜、午后纸张",
+  "readerCustomThemeBackgroundImage": "背景图片",
+  "readerCustomThemeBackgroundImageHint": "支持 JPG、PNG、WebP，图片会复制到应用存储中。",
+  "readerCustomThemeChooseImage": "上传图片",
+  "readerCustomThemeReplaceImage": "更换图片",
+  "readerCustomThemeRemoveImage": "移除图片",
+  "readerCustomThemeImageStrength": "背景图片强度",
+  "readerCustomThemeImageUnsupported": "当前平台暂不支持导入背景图片",
+  "readerCustomThemeImageTooLarge": "图片不能超过 20 MB",
+  "readerCustomThemeImageFormat": "请选择 JPG、PNG 或 WebP 图片",
+  "readerCustomThemeImageFailed": "背景图片导入失败，请重试",
+  "importUnknownTitle": "未知标题",
+  "importUnknownAuthor": "未知作者",
+  "bookUntitled": "未命名",
+  "readerAddAnnotation": "添加批注",
+  "readerAnnotationHint": "写下你对这段文字的想法…",
+  "readerAnnotationSaved": "批注已保存",
+  "readerAnnotationDeleted": "批注已删除",
+  "readerNoAnnotations": "还没有批注",
+  "readerNoAnnotationsHint": "选中文字即可高亮或添加文字批注；点击带下划线的批注文字可再次查看笔记。",
+  "readerChapterProgressTitle": "章节进度",
+  "readerChapterProgressHidden": "不显示",
+  "readerChapterProgressFraction": "{chapter}/{total}章",
+  "readerChapterProgressRemaining": "后续{count}章"
+}

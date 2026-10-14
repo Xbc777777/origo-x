@@ -1,0 +1,52 @@
+name: xxread
+description: Local TXT and EPUB reader source edition.
+publish_to: none
+version: 2.7.2+261003002
+
+environment:
+  sdk: '>=3.12.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  archive: ^3.6.1
+  crypto: ^3.0.7
+  epubx: ^4.0.0
+  file_picker: ^11.0.2
+  flutter_tts: ^4.2.5
+  gbk_codec: ^0.4.0
+  html: ^0.15.6
+  intl: ^0.20.2
+  path: ^1.9.1
+  path_provider: ^2.1.6
+  provider: ^6.1.5
+  scrollable_positioned_list: ^0.3.8
+  shared_preferences: ^2.5.5
+  sqflite: ^2.4.3
+  sqflite_common_ffi: ^2.4.2
+  sqflite_common_ffi_web: ^1.1.2
+  uuid: ^4.6.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  generate: true
+  fonts:
+    - family: ReaderIndent
+      fonts:
+        - asset: assets/fonts/ReaderIndent.ttf
+  assets:
+    - assets/fonts/licenses/
+    - assets/icons/
+    - assets/images/
+    - LICENSE
+    - LICENSE-MIT-LEGACY
+  shaders:
+    - shaders/reader_classic_page_fold.frag
+    - shaders/top_variable_gaussian.frag

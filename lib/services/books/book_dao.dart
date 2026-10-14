@@ -1,0 +1,496 @@
+// 文件说明：书籍 DAO，负责书籍元数据、进度和分页缓存字段的数据库读写。
+// 技术要点：服务层、Flutter。
+
+import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:xxread/services/books/book_storage_codec.dart';
+import 'package:xxread/services/books/book_storage_paths.dart';
+import 'package:xxread/models/book.dart';
+import 'package:xxread/services/core/database_service.dart';
+import 'package:xxread/services/books/book_image_map_service.dart';
+import 'package:xxread/services/books/book_import_models.dart';
+import 'package:xxread/services/books/web_book_file_store.dart';
+
+class BookDao implements BookImportStore {
+  BookDao({
+    Future<Database> Function()? database,
+    Future<Directory> Function()? documentsDirectory,
+  }) : _databaseProvider = database ?? (() => DatabaseService().database),
+       _documentsDirectory =
+           documentsDirectory ?? getApplicationDocumentsDirectory;
+
+  final Future<Database> Function() _databaseProvider;
+  final Future<Directory> Function() _documentsDirectory;
+
+  Future<Book> _fromStorage(Map<String, dynamic> row) =>
+      bookFromStorageMap(row, documentsDirectory: _documentsDirectory);
+
+  Future<List<Book>> _fromStorageRows(List<Map<String, dynamic>> rows) =>
+      booksFromStorageMaps(rows, documentsDirectory: _documentsDirectory);
+
+  Future<Map<String, dynamic>> _toStorage(Book book) =>
+      bookToStorageMap(book, documentsDirectory: _documentsDirectory);
+
+  Future<String> _encodePath(String value) async {
+    if (kIsWeb) return value;
+    return BookStoragePaths((await _documentsDirectory()).path).encode(value);
+  }
+
+  static const List<String> _bookSummaryColumns = [
+    'id',
+    'title',
+    'author',
+    'filePath',
+    'format',
+    'currentPage',
+    'totalPages',
+    'reading_progress',
+    'importDate',
+    'file_modified_time',
+    'content_hash',
+    'cover_image_path',
+    'text_encoding',
+    'last_canonical_locator',
+    'last_rendered_locator',
+    'layout_signature',
+  ];
+
+  Future<int> insertBook(Book book) async {
+    try {
+      final db = await _databaseProvider();
+      final stored = await _toStorage(book);
+      return await db.insert('books', stored);
+    } catch (e) {
+      throw Exception('添加书籍失败: $e');
+    }
+  }
+
+  Future<List<Book>> getAllBooks() async {
+    try {
+      final db = await _databaseProvider();
+      final List<Map<String, dynamic>> maps = await db.query(
+        'books',
+        columns: _bookSummaryColumns,
+        orderBy: 'importDate DESC',
+      );
+      return await _fromStorageRows(maps);
+    } catch (e) {
+      throw Exception('获取书籍列表失败: $e');
+    }
+  }
+
+  /// 批量读取书籍摘要，并保持调用方给出的 ID 顺序。
+  ///
+  /// 首页最近阅读等列表不需要正文、目录和分页缓存字段；一次批量查询可避免
+  /// 对每本书单独往返数据库，也避免把大型缓存列载入内存。
+  Future<List<Book>> getBooksByIds(Iterable<int> bookIds) async {
+    final orderedIds = <int>[];
+    final seen = <int>{};
+    for (final id in bookIds) {
+      if (id > 0 && seen.add(id)) orderedIds.add(id);
+    }
+    if (orderedIds.isEmpty) return const [];
+
+    final db = await _databaseProvider();
+    final booksById = <int, Book>{};
+    const chunkSize = 500;
+    for (var start = 0; start < orderedIds.length; start += chunkSize) {
+      final end = start + chunkSize < orderedIds.length
+          ? start + chunkSize
+          : orderedIds.length;
+      final chunk = orderedIds.sublist(start, end);
+      final placeholders = List.filled(chunk.length, '?').join(',');
+      final rows = await db.query(
+        'books',
+        columns: _bookSummaryColumns,
+        where: 'id IN ($placeholders)',
+        whereArgs: chunk,
+      );
+      for (final book in await _fromStorageRows(rows)) {
+        final id = book.id;
+        if (id != null) booksById[id] = book;
+      }
+    }
+    return orderedIds
+        .map((id) => booksById[id])
+        .whereType<Book>()
+        .toList(growable: false);
+  }
+
+  /// 直接由 SQLite 返回有限的继续阅读候选，避免加载并排序整个书库。
+  Future<List<Book>> getRecentlyReadBooks({int limit = 6}) async {
+    final db = await _databaseProvider();
+    final safeLimit = limit.clamp(1, 100);
+    final rows = await db.query(
+      'books',
+      columns: _bookSummaryColumns,
+      where: 'currentPage > 0',
+      orderBy: 'currentPage DESC, importDate DESC',
+      limit: safeLimit,
+    );
+    return _fromStorageRows(rows);
+  }
+
+  Future<void> updateBookProgress(
+    int bookId,
+    int currentPage, {
+    double? readingProgress,
+  }) async {
+    try {
+      final db = await _databaseProvider();
+      final values = <String, Object?>{'currentPage': currentPage};
+      if (readingProgress != null) {
+        values['reading_progress'] = readingProgress.clamp(0.0, 1.0);
+      }
+      final result = await db.update(
+        'books',
+        values,
+        where: 'id = ?',
+        whereArgs: [bookId],
+      );
+      if (result == 0) {
+        throw Exception('书籍不存在');
+      }
+    } catch (e) {
+      throw Exception('更新阅读进度失败: $e');
+    }
+  }
+
+  Future<int> getBooksCount() async {
+    try {
+      final db = await _databaseProvider();
+      final result = await db.rawQuery('SELECT COUNT(*) as count FROM books');
+      return (result.first['count'] as int?) ?? 0;
+    } catch (e) {
+      throw Exception('获取书籍数量失败: $e');
+    }
+  }
+
+  Future<Book?> getBookById(int bookId) async {
+    try {
+      final db = await _databaseProvider();
+      final List<Map<String, dynamic>> maps = await db.query(
+        'books',
+        where: 'id = ?',
+        whereArgs: [bookId],
+      );
+      if (maps.isNotEmpty) {
+        return await _fromStorage(maps.first);
+      }
+      return null;
+    } catch (e) {
+      throw Exception('获取书籍详情失败: $e');
+    }
+  }
+
+  Future<void> updateBookTotalPages(int bookId, int totalPages) async {
+    final db = await _databaseProvider();
+    await db.update(
+      'books',
+      {'totalPages': totalPages},
+      where: 'id = ?',
+      whereArgs: [bookId],
+    );
+  }
+
+  Future<void> updateBook(Book book) async {
+    try {
+      final db = await _databaseProvider();
+      final stored = await _toStorage(book);
+      final updated = await db.update(
+        'books',
+        stored,
+        where: 'id = ?',
+        whereArgs: [book.id],
+      );
+      if (updated != 1) throw StateError('书籍不存在');
+    } catch (e) {
+      throw Exception('更新书籍信息失败: $e');
+    }
+  }
+
+  Future<void> deleteBook(int bookId) async {
+    try {
+      final db = await _databaseProvider();
+      final book = await getBookById(bookId);
+
+      // 🗑️ 删除相关缓存
+      await _deleteBookCaches(bookId);
+
+      // 删除数据库记录。显式删除子表行：外键 CASCADE 依赖
+      // PRAGMA foreign_keys 开启，这里手动删除保证历史数据也被清理。
+      final result = await db.transaction((txn) async {
+        await txn.delete('bookmarks', where: 'bookId = ?', whereArgs: [bookId]);
+        await txn.delete(
+          'book_notes',
+          where: 'book_id = ?',
+          whereArgs: [bookId],
+        );
+        return txn.delete('books', where: 'id = ?', whereArgs: [bookId]);
+      });
+      if (result == 0) {
+        throw Exception('书籍不存在或已被删除');
+      }
+      if (kIsWeb &&
+          book != null &&
+          WebBookFileStore.isWebBookPath(book.filePath)) {
+        await WebBookFileStore().delete(book.filePath);
+      }
+
+      debugPrint('✅ 书籍已删除: $bookId（包括所有相关缓存）');
+    } catch (e) {
+      throw Exception('删除书籍失败: $e');
+    }
+  }
+
+  /// 删除书籍相关的缓存
+  ///
+  /// 包括：
+  /// - 图片映射文件
+  /// - 旧分页缓存文件（按 contentHash 目录清理）
+  Future<void> _deleteBookCaches(int bookId) async {
+    debugPrint('🗑️ 开始清除书籍缓存: $bookId');
+
+    try {
+      // 1. 删除图片映射
+      final imageMapService = BookImageMapService();
+      await imageMapService.deleteImageMap(bookId);
+      debugPrint('  ✅ 图片映射已删除');
+    } catch (e) {
+      debugPrint('  ⚠️ 删除图片映射失败: $e');
+    }
+
+    try {
+      // 2. 清理已停用的旧分页缓存目录。
+      final book = await getBookById(bookId);
+      if (book != null && book.contentHash != null) {
+        final cacheDir = await _paginationCacheDir();
+        final bookCacheDir = Directory('${cacheDir.path}/${book.contentHash}');
+        if (await bookCacheDir.exists()) {
+          await bookCacheDir.delete(recursive: true);
+          debugPrint('  ✅ 旧分页缓存目录已清理');
+        }
+      }
+    } catch (e) {
+      debugPrint('  ⚠️ 清理旧分页缓存目录失败: $e');
+    }
+
+    debugPrint('🗑️ 缓存清除完成');
+  }
+
+  /// 获取旧分页缓存根目录路径。
+  Future<Directory> _paginationCacheDir() async {
+    // 使用 path_provider 获取文档目录，与旧 PaginationCacheService 同级
+    final db = await _databaseProvider();
+    final dbPath = db.path;
+    final parentDir = Directory(dbPath).parent;
+    final cacheDir = Directory('${parentDir.path}/pagination_cache');
+    return cacheDir;
+  }
+
+  // 更新书籍文件路径 - 用于处理iOS沙盒路径变更
+  Future<void> updateBookFilePath(int bookId, String newFilePath) async {
+    try {
+      final db = await _databaseProvider();
+      final result = await db.update(
+        'books',
+        {'filePath': await _encodePath(newFilePath)},
+        where: 'id = ?',
+        whereArgs: [bookId],
+      );
+      if (result == 0) {
+        throw Exception('书籍不存在');
+      }
+    } catch (e) {
+      throw Exception('更新书籍文件路径失败: $e');
+    }
+  }
+
+  // 更新书籍封面图片路径
+  Future<void> updateBookCoverPath(int bookId, String? coverImagePath) async {
+    try {
+      final db = await _databaseProvider();
+      final result = await db.update(
+        'books',
+        {
+          'cover_image_path': coverImagePath == null
+              ? null
+              : await _encodePath(coverImagePath),
+        },
+        where: 'id = ?',
+        whereArgs: [bookId],
+      );
+      if (result == 0) {
+        throw Exception('书籍不存在');
+      }
+    } catch (e) {
+      throw Exception('更新书籍封面失败: $e');
+    }
+  }
+
+  /// 通过内容哈希值查找书籍
+  ///
+  /// 用于检查是否已导入相同内容的书籍
+  /// 参数 [contentHash] 书籍文件的MD5哈希值
+  /// 返回找到的书籍，如果不存在则返回null
+  @override
+  Future<Book?> getBookByHash(String contentHash) async {
+    try {
+      final db = await _databaseProvider();
+      final List<Map<String, dynamic>> maps = await db.query(
+        'books',
+        where: 'content_hash = ?',
+        whereArgs: [contentHash],
+      );
+      if (maps.isNotEmpty) {
+        return await _fromStorage(maps.first);
+      }
+      return null;
+    } catch (e) {
+      throw Exception('通过哈希值查找书籍失败: $e');
+    }
+  }
+
+  @override
+  Future<Book?> getBookByFilePath(String filePath) async {
+    final db = await _databaseProvider();
+    final maps = await db.query(
+      'books',
+      where: 'filePath IN (?, ?)',
+      whereArgs: [await _encodePath(filePath), filePath],
+      limit: 1,
+    );
+    return maps.isEmpty ? null : await _fromStorage(maps.first);
+  }
+
+  @override
+  Future<BookInsertDecision> insertIfAbsentByHash(Book book) async {
+    final contentHash = book.contentHash;
+    if (contentHash == null || contentHash.isEmpty) {
+      throw ArgumentError.value(
+        contentHash,
+        'book.contentHash',
+        '原子导入前必须先计算内容哈希',
+      );
+    }
+
+    final db = await _databaseProvider();
+    return db.transaction((txn) async {
+      final maps = await txn.query(
+        'books',
+        where: 'content_hash = ?',
+        whereArgs: [contentHash],
+        limit: 1,
+      );
+      if (maps.isNotEmpty) {
+        return BookInsertDecision.existing(await _fromStorage(maps.first));
+      }
+
+      final id = await txn.insert('books', await _toStorage(book));
+      return BookInsertDecision.inserted(book.copyWith(id: id));
+    });
+  }
+
+  @override
+  Future<Book> updateBookStorageLocation({
+    required Book book,
+    required String filePath,
+  }) async {
+    final updated = book.copyWith(filePath: filePath);
+    await updateBook(updated);
+    return updated;
+  }
+
+  // We can add other DAOs (e.g., BookmarkDao) in separate files
+  // for better organization.
+
+  /// 更新书籍的 CanonicalLocator 双轨定位进度。
+  ///
+  /// 同时写入 canonical、rendered 和 layoutSignature，
+  /// 并更新 currentPage 以兼容旧链路。
+  Future<void> updateBookCanonicalLocator(
+    int bookId,
+    String canonicalJson,
+    String? renderedJson,
+    String? layoutSignature,
+    int currentPage, {
+    double? readingProgress,
+  }) async {
+    try {
+      final db = await _databaseProvider();
+      final updates = <String, dynamic>{
+        'last_canonical_locator': canonicalJson,
+        'currentPage': currentPage,
+      };
+      if (readingProgress != null) {
+        updates['reading_progress'] = readingProgress.clamp(0.0, 1.0);
+      }
+      if (renderedJson != null) {
+        updates['last_rendered_locator'] = renderedJson;
+      }
+      if (layoutSignature != null) {
+        updates['layout_signature'] = layoutSignature;
+      }
+      final result = await db.update(
+        'books',
+        updates,
+        where: 'id = ?',
+        whereArgs: [bookId],
+      );
+      if (result == 0) {
+        throw Exception('书籍不存在');
+      }
+    } catch (e) {
+      throw Exception('更新 CanonicalLocator 进度失败: $e');
+    }
+  }
+
+  /// Replaces every persisted component of the reading position.
+  ///
+  /// Unlike [updateBookCanonicalLocator], this can intentionally clear a
+  /// canonical locator when local content changes.
+  Future<void> replaceBookProgress(
+    int bookId, {
+    required int currentPage,
+    required double? readingProgress,
+    required String? canonicalLocator,
+    int? totalPages,
+  }) async {
+    final db = await _databaseProvider();
+    final values = <String, Object?>{
+      'currentPage': currentPage,
+      'reading_progress': readingProgress?.clamp(0.0, 1.0),
+      'last_canonical_locator': canonicalLocator,
+      'last_rendered_locator': null,
+      'layout_signature': null,
+      'totalPages': ?totalPages,
+    };
+    final result = await db.update(
+      'books',
+      values,
+      where: 'id = ?',
+      whereArgs: [bookId],
+    );
+    if (result == 0) throw Exception('书籍不存在');
+  }
+
+  /// Invalidates layout-dependent locators after a text revision could not be
+  /// mapped exactly. The normalized percentage remains available as a safe
+  /// fallback and no synthetic reading event is emitted.
+  Future<void> clearBookLocatorAfterContentChange(int bookId) async {
+    final db = await _databaseProvider();
+    final result = await db.update(
+      'books',
+      {
+        'last_canonical_locator': null,
+        'last_rendered_locator': null,
+        'layout_signature': null,
+      },
+      where: 'id = ?',
+      whereArgs: [bookId],
+    );
+    if (result == 0) throw Exception('书籍不存在');
+  }
+}
